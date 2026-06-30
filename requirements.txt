@@ -1,0 +1,8 @@
+# Only required for the Claude API scoring pass (src/score_leads_ai.py).
+# The rules pass (src/score_leads.py) and the dashboard build use the
+# Python standard library only — no install needed.
+#
+# Tested with: anthropic 0.112.0, pydantic 2.13.4
+
+anthropic>=0.69
+pydantic>=2.0
