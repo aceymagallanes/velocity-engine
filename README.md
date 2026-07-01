@@ -11,7 +11,12 @@ This repository is a **self-contained, end-to-end demonstration** of an AI lead-
 
 It models a fictional company, **Cadence Workflow** — a ~120-person Series B B2B SaaS selling project-management software per-seat — where 3 SDRs and 4 AEs can't reach 400 monthly leads in time, so the best buyers go cold before anyone calls.
 
-**🔗 Live demo:** *enable GitHub Pages on the `/docs` folder, then link your `https://<user>.github.io/velocity-engine/` URL here.*
+**▶ Live demos** — once GitHub Pages is enabled (Settings → Pages → Deploy from a branch → `main` / `/docs`):
+
+| Demo | Link |
+|---|---|
+| 🛠️ **Velocity Console** — the interactive **working tool** (queue, routing, live scorer) | `https://aceymagallanes.github.io/velocity-engine/console.html` · [how to use](https://aceymagallanes.github.io/velocity-engine/guide.html) |
+| 📊 **Executive dashboard** — the narrative walkthrough | `https://aceymagallanes.github.io/velocity-engine/` |
 
 ---
 
@@ -19,6 +24,7 @@ It models a fictional company, **Cadence Workflow** — a ~120-person Series B B
 
 - [What it does](#what-it-does)
 - [Results](#results)
+- [Live working demo — the Velocity Console](#live-working-demo--the-velocity-console)
 - [Data architecture](#data-architecture)
 - [How Velocity works (technical)](#how-velocity-works-technical)
 - [Tech stack](#tech-stack)
@@ -57,6 +63,19 @@ Modeled on the synthetic dataset in this repo (400 leads, calibrated to a realis
 | Priority tiers (emerged from messages, not labeled) | — | 16% High · 32% Medium · 52% Low | — |
 
 > The "to-be" SLAs are conservative routing targets (High 5 min, Medium 60 min, Low 24 h). The "as-is" baseline is calibrated to a ~2,520-minute (≈42 h) mean with a long tail and ~28% never contacted — see [Data dictionary](#data-dictionary).
+
+---
+
+## Live working demo — the Velocity Console
+
+Beyond the narrative dashboard, the repo ships a **functional tool**: [`docs/console.html`](docs/console.html) — a live lead-triage workbench that runs entirely in the browser (no backend, no login).
+
+- **Filterable / sortable / searchable queue** of all 400 leads, with **live-updating KPIs**.
+- **Per-lead detail & routing** — click any lead for its BANT breakdown, the reason, the recommended action + SLA, and a **Route this lead** button that updates the queue.
+- **⚡ Live scorer** — paste *any* lead message and the **actual BANT rules engine — ported from [`src/score_leads.py`](src/score_leads.py) to run client-side** — scores and tiers it in real time. This is the proof the engine genuinely reads and reasons over the text, not a canned result.
+- A built-in **[how-to-use guide](docs/guide.html)** with a 30-second demo script.
+
+**Try it live:** `https://aceymagallanes.github.io/velocity-engine/console.html`
 
 ---
 
@@ -196,12 +215,15 @@ velocity-engine/
 │   ├── generate_leads.py     # synthetic, calibrated 400-lead dataset
 │   ├── score_leads.py        # RULES pass — deterministic BANT, free & offline
 │   ├── score_leads_ai.py     # AI pass — Claude API + structured outputs
-│   └── build_dashboard.py    # renders the interactive dashboard from scored data
+│   ├── build_dashboard.py    # renders the executive dashboard
+│   └── build_console.py      # renders the working Console + how-to guide
 ├── data/
 │   ├── leads.json            # raw synthetic leads
 │   └── leads_scored.json     # leads + BANT scores + tiers + SLAs
-└── docs/
-    └── index.html            # the interactive dashboard (GitHub Pages-ready)
+└── docs/                     # GitHub Pages-ready
+    ├── index.html            # executive dashboard (the narrative)
+    ├── console.html          # Velocity Console (the working tool)
+    └── guide.html            # how to use the console
 ```
 
 ---
@@ -215,10 +237,12 @@ velocity-engine/
 ```bash
 python src/generate_leads.py     # writes data/leads.json
 python src/score_leads.py        # writes data/leads_scored.json
-python src/build_dashboard.py    # writes docs/index.html
+python src/build_dashboard.py    # writes docs/index.html  (executive dashboard)
+python src/build_console.py      # writes docs/console.html + docs/guide.html  (working tool)
 
-# open the dashboard
-open docs/index.html             # macOS  (use 'start' on Windows / 'xdg-open' on Linux)
+# open them
+open docs/console.html           # the working Console  (macOS; 'start' on Windows, 'xdg-open' on Linux)
+open docs/index.html             # the executive dashboard
 ```
 
 ### Option B — AI pass (real Claude scoring)
